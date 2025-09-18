@@ -1,4 +1,29 @@
-name: Java CI with Maven - Test and package
+# Exercice 2 TD1 : 
+# name: Java CI with Maven - Test and package
+
+# on:
+#   pull_request:
+#     branches: [ main ]
+
+# jobs:
+#   build:
+#     name: Build and Test
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+
+#       - name: Set up JDK 21 (Corretto)
+#         uses: actions/setup-java@v4
+#         with:
+#           distribution: 'corretto'
+#           java-version: '21'
+
+#       - name: Build with Maven (package)
+#         run: mvn -B package
+
+#  Modification pour l'exercice 3 TD1 :
+name: Java CI with Maven - Test and Sonar
 
 on:
   pull_request:
@@ -6,7 +31,7 @@ on:
 
 jobs:
   build:
-    name: Build and Test
+    name: Build, Test and Sonar Analysis
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -20,3 +45,9 @@ jobs:
 
       - name: Build with Maven (package)
         run: mvn -B package
+
+      - name: SonarCloud Analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+              -Dsonar.projectKey=$(echo ${{ github.repository }} | sed 's-/-_-')
